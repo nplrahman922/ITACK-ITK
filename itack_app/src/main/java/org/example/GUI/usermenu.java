@@ -3,15 +3,16 @@ package org.example.GUI;
 import org.example.user; // Import kelas logika user
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+
+// import javax.swing.border.Border;
+// import java.awt.event.ActionListener;
+// import java.awt.event.ActionEvent;
 
 public class usermenu extends JFrame {
     // Deklarasi komponen sebagai field kelas
@@ -195,15 +196,20 @@ public class usermenu extends JFrame {
     // --- METODE LOGIKA ---
     
     private void refreshTable() {
-        // Menggunakan kelas 'user' untuk mendapatkan model tabel
         DefaultTableModel model = user.getTableModel();
         table.setModel(model);
-        // Atur lebar kolom sesuai kebutuhan
-        table.getColumnModel().getColumn(0).setPreferredWidth(40);
-        table.getColumnModel().getColumn(1).setPreferredWidth(90);
-        table.getColumnModel().getColumn(2).setPreferredWidth(80);
-        table.getColumnModel().getColumn(3).setPreferredWidth(120);
-        table.getColumnModel().getColumn(4).setPreferredWidth(90);
+
+        // Menyembunyikan kolom pertama (kolom "ID" asli) dari tampilan
+        table.getColumnModel().getColumn(0).setMinWidth(0);
+        table.getColumnModel().getColumn(0).setMaxWidth(0);
+        table.getColumnModel().getColumn(0).setWidth(0);
+
+        // Mengatur lebar kolom yang terlihat agar rapi
+        table.getColumnModel().getColumn(1).setPreferredWidth(40);   // Kolom "No."
+        table.getColumnModel().getColumn(2).setPreferredWidth(90);   // Kolom "Tanggal"
+        table.getColumnModel().getColumn(3).setPreferredWidth(80);   // Kolom "Status"
+        table.getColumnModel().getColumn(4).setPreferredWidth(120);  // Kolom "Deskripsi"
+        table.getColumnModel().getColumn(5).setPreferredWidth(90);   // Kolom "Tempat"
     }
 
     private void tambahData() {

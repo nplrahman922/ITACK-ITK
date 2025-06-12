@@ -8,20 +8,22 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
- * Kelas Login yang secara ketat sesuai dengan desain UML untuk tujuan akademis.
- * Kelas ini mencakup semua atribut dan metode yang ditentukan dalam diagram.
+ * Kelas Login yang disesuaikan agar ketat sesuai dengan desain UML.
  */
 public class Login {
-    // Atribut sesuai UML
-    private int id_login;
+    // --- PERUBAHAN ATRIBUT ---
+    // Diubah dari 'int' menjadi 'String' agar sesuai dengan UML "id_login : String".png].
+    private String id_login;
     private String Password;
 
     /**
      * Konstruktor untuk membuat objek Login.
      * @param id_login ID pengguna atau admin.
-     * @param password Kata sandi (terutama untuk admin).
+     * @param password Kata sandi.
      */
-    public Login(int id_login, String password) {
+    // --- PERUBAHAN KONSTRUKTOR ---
+    // Parameter id_login diubah menjadi String.
+    public Login(String id_login, String password) {
         this.id_login = id_login;
         this.Password = password;
     }
@@ -30,20 +32,30 @@ public class Login {
     // METODE GETTER DAN SETTER SESUAI UML
     // ===================================================================
 
-    public String getPass() {
-        return this.Password;
+    // --- PERUBAHAN METODE ---
+    // Nama metode diubah dari 'getPass' ke 'getPassword' dan return type menjadi 'void' sesuai UML.png].
+    public void getPassword() {
+        // Logika untuk metode ini bisa ditambahkan jika diperlukan,
+        // namun berdasarkan UML, metode ini tidak mengembalikan nilai.
+        System.out.println("Metode getPassword() dipanggil.");
     }
 
     public void setPass(String password) {
         this.Password = password;
     }
 
-    public int getPengguna() { // Menggunakan 'getPengguna' sesuai UML untuk mendapatkan ID
-        return this.id_login;
+    // --- PERUBAHAN METODE ---
+    // Return type diubah dari 'int' menjadi 'void' agar sesuai dengan UML "getPengguna() : void".png].
+    public void getPengguna() {
+        System.out.println("Metode getPengguna() dipanggil. ID: " + this.id_login);
     }
 
-    public void setPengguna(int id_login) { // Menggunakan 'setPengguna' sesuai UML untuk mengatur ID
-        this.id_login = id_login;
+    // --- PERUBAHAN METODE ---
+    // Parameter disesuaikan dengan UML "setPengguna(int id_log, String Password) : void".png].
+    // Tipe data id_log diubah ke String agar konsisten dengan atribut kelas.
+    public void setPengguna(String id_log, String password) {
+        this.id_login = id_log;
+        this.Password = password;
     }
 
 
@@ -53,21 +65,18 @@ public class Login {
 
     /**
      * Metode verifikasi login sesuai dengan yang ada di UML.
-     * Dalam implementasi praktis, metode yang lebih spesifik di bawah ini lebih berguna.
      */
     public void verif_login() {
         // Metode ini ada untuk memenuhi kontrak UML.
-        // Logika verifikasi yang sebenarnya dipecah menjadi verif_login_admin dan verif_login_user.
         System.out.println("Metode verifikasi umum dipanggil.");
     }
 
-    /**
-     * Metode pembantu untuk memverifikasi admin (menggunakan String ID dan Password).
-     * Ini adalah implementasi praktis yang dipanggil oleh GUI.
-     * @param adminId ID admin dalam bentuk String.
-     * @param adminPass Password admin.
-     * @return true jika valid, false jika tidak.
+    /*
+     * CATATAN: Metode statis di bawah ini tidak ada di diagram UML untuk instance Login,
+     * tetapi sangat penting untuk fungsionalitas GUI. Metode ini sebaiknya dipertahankan
+     * agar aplikasi tetap berjalan, meskipun secara teknis ini adalah penyimpangan dari diagram.
      */
+
     public static boolean verif_login_admin(String adminId, String adminPass) {
         String sql = "SELECT * FROM admin WHERE id_admin = ? AND password = ?";
         try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Data.db");
@@ -83,12 +92,6 @@ public class Login {
         }
     }
 
-    /**
-     * Metode pembantu untuk memverifikasi user (menggunakan int ID).
-     * Ini adalah implementasi praktis yang dipanggil oleh GUI.
-     * @param userId ID user dalam bentuk integer.
-     * @return true jika valid atau berhasil dibuat, false jika gagal.
-     */
     public static boolean verif_login_user(int userId) {
         String checkSql = "SELECT id_user FROM user WHERE id_user = ?";
         try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Data.db");
@@ -96,9 +99,8 @@ public class Login {
             pstmtCheck.setInt(1, userId);
             try (ResultSet rs = pstmtCheck.executeQuery()) {
                 if (rs.next()) {
-                    return true; // User ditemukan
+                    return true;
                 } else {
-                    // Buat user baru jika tidak ditemukan
                     String insertSql = "INSERT INTO user (id_user) VALUES (?)";
                     try (PreparedStatement pstmtInsert = conn.prepareStatement(insertSql)) {
                         pstmtInsert.setInt(1, userId);
@@ -113,15 +115,10 @@ public class Login {
         }
     }
 
-    // ===================================================================
-    // METODE INISIALISASI DATABASE (TETAP STATIS)
-    // ===================================================================
-    
     public static void initDatabase() {
         String DB_URL = "jdbc:sqlite:Data.db";
         try (Connection conn = DriverManager.getConnection(DB_URL);
             Statement stmt = conn.createStatement()) {
-
             stmt.execute("CREATE TABLE IF NOT EXISTS data (id_data INTEGER PRIMARY KEY, Tanggal TEXT NOT NULL, Status TEXT NOT NULL, Deskripsi TEXT NOT NULL, Tempat TEXT NOT NULL);");
             stmt.execute("CREATE TABLE IF NOT EXISTS admin (id_admin TEXT PRIMARY KEY, password TEXT NOT NULL)");
             stmt.execute("CREATE TABLE IF NOT EXISTS user (id_user INTEGER PRIMARY KEY)");

@@ -4,7 +4,6 @@ import org.example.admin; // Import kelas logika baru
 import org.example.Login; // Diperlukan untuk main method
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -13,8 +12,10 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+
+// import javax.swing.border.Border;
+// import java.awt.event.ActionListener;
+// import java.awt.event.ActionEvent;
 
 
 public class adminmenu extends JFrame {
@@ -248,18 +249,46 @@ public class adminmenu extends JFrame {
         
         table = new JTable();
         refreshTable();
+        
         JScrollPane scrollPaneTable = new JScrollPane(table);
         tabel_panel.add(scrollPaneTable, BorderLayout.CENTER);
+
+        // ===== PERBAIKAN: GANTI SEMUA LISTENER LAMA DENGAN INI =====
+        // Pasang listener pada JScrollPane, bukan pada JTable secara langsung.
+        scrollPaneTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                // Periksa apakah tabel sedang tidak dalam mode edit
+                if (!table.isEditing()) {
+                    // Dapatkan titik di mana mouse diklik
+                    Point point = e.getPoint();
+                    // Cek apakah ada baris di titik tersebut
+                    int rowAtPoint = table.rowAtPoint(point);
+                    
+                    // Jika tidak ada baris di titik klik, berarti klik di area kosong
+                    if (rowAtPoint == -1) {
+                        // Panggil metode untuk membersihkan pilihan dan form
+                        bersihkanForm();
+                    }
+                }
+            }
+        });
+        
+        // Listener untuk mengisi form HANYA saat sebuah baris di tabel diklik
+        table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // Pastikan yang diklik adalah sebuah baris
+                if (table.getSelectedRow() != -1) {
+                    isiFormDariTabel();
+                }
+            }
+        });
 
         // --- HUBUNGKAN ACTION LISTENERS ---
         tambah.addActionListener(e -> tambahData());
         button_edit.addActionListener(e -> editData());
         button_hapus.addActionListener(e -> hapusData());
-        table.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                isiFormDariTabel();
-            }
-        });
     }
 
     // --- METODE LOGIKA ---
@@ -267,12 +296,19 @@ public class adminmenu extends JFrame {
     private void refreshTable() {
         DefaultTableModel model = admin.getTableModel();
         table.setModel(model);
-        // Atur lebar kolom (tetap sama)
-        table.getColumnModel().getColumn(0).setPreferredWidth(40);
-        table.getColumnModel().getColumn(1).setPreferredWidth(90);
-        table.getColumnModel().getColumn(2).setPreferredWidth(80);
-        table.getColumnModel().getColumn(3).setPreferredWidth(120);
-        table.getColumnModel().getColumn(4).setPreferredWidth(90);
+
+        // Menyembunyikan kolom pertama (kolom "ID" asli) dari tampilan
+        table.getColumnModel().getColumn(0).setMinWidth(0);
+        table.getColumnModel().getColumn(0).setMaxWidth(0);
+        table.getColumnModel().getColumn(0).setWidth(0);
+
+        // Mengatur lebar kolom yang terlihat agar rapi
+        // Indeks sekarang bergeser karena "ID" disembunyikan
+        table.getColumnModel().getColumn(1).setPreferredWidth(40);   // Kolom "No."
+        table.getColumnModel().getColumn(2).setPreferredWidth(90);   // Kolom "Tanggal"
+        table.getColumnModel().getColumn(3).setPreferredWidth(80);   // Kolom "Status"
+        table.getColumnModel().getColumn(4).setPreferredWidth(120);  // Kolom "Deskripsi"
+        table.getColumnModel().getColumn(5).setPreferredWidth(90);   // Kolom "Tempat"
     }
 
     /**
@@ -285,12 +321,19 @@ public class adminmenu extends JFrame {
                 return;
             }
 
-            // 1. Konversi tipe data
+            // 1. Ambil status dalam bentuk String, bukan boolean.
+            String status;
+            if (radioButtonSelesai.isSelected()) {
+                status = "Baik";
+            } else {
+                status = "Rusak"; 
+            }
+            
+            // Ambil data lain dari form
             LocalDate tanggal = LocalDate.parse(tanggal_text.getText(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            boolean status = radioButtonSelesai.isSelected(); // true untuk "Baik", false untuk "Rusak"
             int newId = admin.getLatestId() + 1;
             
-            // 2. Buat objek admin menggunakan konstruktor baru
+            // 2. Buat objek admin menggunakan konstruktor yang benar (dengan String status)
             admin dataBaru = new admin(this.adminId, null, newId, tanggal, status, deskripsi_text.getText(), tempat_text.getText());
             
             // 3. Panggil metode Save_data()
@@ -315,17 +358,22 @@ public class adminmenu extends JFrame {
             return;
         }
         try {
-            // 1. Konversi tipe data dari form
-            LocalDate tanggal = LocalDate.parse(tanggal_text.getText(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            boolean status = radioButtonEditBaik.isSelected(); // Di sini kita hanya peduli status "Baik" (true) atau lainnya (false)
-            // Catatan: UML hanya punya satu 'status' boolean. 'Perbaikan' bisa dianggap 'false' (tidak baik).
-            if(radioButtonEditRusak.isSelected() || radioButtonEditProgress.isSelected()){
-                status = false;
+            // 1. Ambil status dalam bentuk String dari radio button yang benar
+            String status;
+            if (radioButtonEditBaik.isSelected()) {
+                status = "Baik";
+            } else if (radioButtonEditProgress.isSelected()) {
+                status = "Perbaikan";
+            } else {
+                status = "Rusak";
             }
-
-            int id = (int) table.getValueAt(selectedRow, 0);
             
-            // 2. Buat objek admin yang akan di-update
+            // Ambil data lain dari form
+            LocalDate tanggal = LocalDate.parse(tanggal_text.getText(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            int modelRow = table.convertRowIndexToModel(selectedRow);
+            int id = (int) table.getModel().getValueAt(modelRow, 0);
+            
+            // 2. Buat objek admin menggunakan konstruktor baru yang menerima String status
             admin dataDiedit = new admin(this.adminId, null, id, tanggal, status, deskripsi_text.getText(), tempat_text.getText());
             
             // 3. Panggil metode Save_data()
@@ -365,25 +413,36 @@ public class adminmenu extends JFrame {
      * PERUBAHAN: Menyesuaikan status String dari tabel ke pilihan radio button.
      */
     private void isiFormDariTabel() {
-        int row = table.getSelectedRow();
-        if (row != -1) {
-            tanggal_text.setText(table.getValueAt(row, 1).toString());
-            tempat_text.setText(table.getValueAt(row, 4).toString());
-            deskripsi_text.setText(table.getValueAt(row, 3).toString());
+        int selectedRowInView = table.getSelectedRow();
+        
+        if (selectedRowInView != -1) {
+            // Konversi indeks baris dari tampilan ke model untuk keamanan
+            int modelRow = table.convertRowIndexToModel(selectedRowInView);
+
+            // Ambil data dari model menggunakan indeks kolom yang sudah benar
+            String tanggalDariTabel = table.getModel().getValueAt(modelRow, 2).toString();
+            String statusDariTabel = table.getModel().getValueAt(modelRow, 3).toString();
+            String deskripsiDariTabel = table.getModel().getValueAt(modelRow, 4).toString();
+            String tempatDariTabel = table.getModel().getValueAt(modelRow, 5).toString();
+
+            // Masukkan data ke dalam form
+            tanggal_text.setText(tanggalDariTabel);
+            tempat_text.setText(tempatDariTabel);
+            deskripsi_text.setText(deskripsiDariTabel);
             
-            // Konversi status dari String (di tabel) ke pilihan Radio Button
-            String statusDariTabel = table.getValueAt(row, 2).toString();
-            
+            // Sesuaikan pilihan radio button berdasarkan status dari tabel
             if (statusDariTabel.equalsIgnoreCase("Baik")) {
                 radioButtonSelesai.setSelected(true);
                 radioButtonEditBaik.setSelected(true);
             } else if (statusDariTabel.equalsIgnoreCase("Perbaikan")) {
-                radioButtonProgress.setSelected(true);
-                radioButtonEditProgress.setSelected(true);
+                radioButtonProgress.setSelected(true); // Untuk form "Tambah"
+                radioButtonEditProgress.setSelected(true); // Untuk form "Edit"
             } else { // Rusak
-                radioButtonProgress.setSelected(true);
-                radioButtonEditRusak.setSelected(true);
+                radioButtonProgress.setSelected(true); // Untuk form "Tambah"
+                radioButtonEditRusak.setSelected(true); // Untuk form "Edit"
             }
+
+            tambah.setEnabled(false); // Nonaktifkan tombol tambah saat mengedit
         }
     }
     
@@ -394,6 +453,10 @@ public class adminmenu extends JFrame {
         radioButtonSelesai.setSelected(true);
         radioButtonEditBaik.setSelected(true);
         table.clearSelection();
+
+        if (!tambah.isEnabled()) {
+            tambah.setEnabled(true);
+        }
     }
     
     public static void main(String[] args) {

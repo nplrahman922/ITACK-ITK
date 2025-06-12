@@ -10,3 +10,8 @@ catatan penyusun :
 
 1. class GUI udh kusesuain sama logic
 2. udh kucoba logicnya dan udh mantap keknya
+
+Final gw njir:
+1. logic udah jalan
+2. udah ga nemu bug gwe
+3. harusnya udah selesai sih ini

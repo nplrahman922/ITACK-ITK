@@ -55,28 +55,42 @@ public class user {
 
     // Metode statis untuk mengambil semua data dan menampilkannya di JTable
     public static DefaultTableModel getTableModel() {
-        String[] columnNames = {"ID", "Tanggal", "Status", "Deskripsi", "Tempat"};
+        // 1. Tambahkan kolom "No." untuk ditampilkan dan "ID" untuk internal
+        String[] columnNames = {"ID", "No.", "Tanggal", "Status", "Deskripsi", "Tempat"};
+        
         DefaultTableModel model = new DefaultTableModel(null, columnNames) {
-             @Override
+            @Override
             public boolean isCellEditable(int row, int column) {
-               return false; // Membuat sel tabel tidak bisa diedit
+            // Membuat sel tidak bisa diedit
+            return false;
             }
         };
 
         String dbUrl = "jdbc:sqlite:Data.db";
         String sql = "SELECT * FROM data ORDER BY id_data";
+        
+        // 2. Buat variabel counter untuk nomor urut
+        int rowNumber = 1;
+
         try (Connection conn = DriverManager.getConnection(dbUrl);
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 Vector<Object> row = new Vector<>();
-                row.add(rs.getInt("id_data"));
+                // 3. Tambahkan ID asli (untuk internal) dan nomor urut (untuk ditampilkan)
+                row.add(rs.getInt("id_data")); // Kolom 0: ID asli (akan disembunyikan)
+                row.add(rowNumber);                  // Kolom 1: Nomor urut yang rapi
+                
+                // Tambahkan sisa data
                 row.add(rs.getString("Tanggal"));
-                row.add(rs.getString("Status")); // Membaca status sebagai String
+                row.add(rs.getString("Status"));
                 row.add(rs.getString("Deskripsi"));
                 row.add(rs.getString("Tempat"));
                 model.addRow(row);
+                
+                // 4. Naikkan counter
+                rowNumber++;
             }
         } catch (SQLException e) {
             System.err.println("ERROR saat mengambil data untuk tabel: " + e.getMessage());

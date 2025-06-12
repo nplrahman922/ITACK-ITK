@@ -17,15 +17,18 @@ public class admin extends MainModel implements SettingData {
     private String id_admin;
     private String PWD;
 
+    private String statusDetail;
+
     /**
      * Konstruktor untuk kelas Admin.
      * Menginisialisasi atribut dari kelas Admin dan kelas parent (MainModel).
      */
-    public admin(String id_admin, String PWD, int id_data, LocalDate Tanggal, boolean Status, String Deskripsi, String Tempat) {
-        // Memanggil konstruktor dari parent class (MainModel)
-        super(id_data, Tanggal, Status, Deskripsi, Tempat);
+    public admin(String id_admin, String PWD, int id_data, LocalDate Tanggal, String status, String Deskripsi, String Tempat) {
+        // Konversi status string ke boolean untuk superclass
+        super(id_data, Tanggal, status.equalsIgnoreCase("Baik"), Deskripsi, Tempat);
         this.id_admin = id_admin;
         this.PWD = PWD;
+        this.statusDetail = status; // Simpan status string yang detail
     }
 
     // ===================================================================
@@ -34,19 +37,18 @@ public class admin extends MainModel implements SettingData {
 
     @Override
     public void Save_data() {
-        // Logika untuk menyimpan data objek ini ke database.
         String dbUrl = "jdbc:sqlite:Data.db";
         String sql = "INSERT OR REPLACE INTO data (id_data, Tanggal, Status, Deskripsi, Tempat) VALUES(?,?,?,?,?)";
         
-        // Konversi tipe data agar sesuai dengan skema database
         String tanggalStr = getTanggal().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        String statusStr = getStatus() ? "Baik" : "Rusak"; // true = Baik, false = Rusak
+        // GUNAKAN statusDetail, BUKAN konversi dari boolean
+        String statusStr = this.statusDetail;
 
         try (Connection conn = DriverManager.getConnection(dbUrl);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, getId_data());
             pstmt.setString(2, tanggalStr);
-            pstmt.setString(3, statusStr);
+            pstmt.setString(3, statusStr); // Simpan status yang benar ("Baik", "Rusak", atau "Perbaikan")
             pstmt.setString(4, getDeskripsi());
             pstmt.setString(5, getTempat());
             pstmt.executeUpdate();
@@ -167,27 +169,42 @@ public class admin extends MainModel implements SettingData {
     }
 
     public static DefaultTableModel getTableModel() {
-        String[] columnNames = {"ID", "Tanggal", "Status", "Deskripsi", "Tempat"};
+        // 1. Tambahkan kolom "No." untuk ditampilkan dan "ID" untuk internal
+        String[] columnNames = {"ID", "No.", "Tanggal", "Status", "Deskripsi", "Tempat"};
+        
         DefaultTableModel model = new DefaultTableModel(null, columnNames) {
-             @Override
+            @Override
             public boolean isCellEditable(int row, int column) {
-               return false;
+            // Membuat sel tidak bisa diedit
+            return false;
             }
         };
 
         String dbUrl = "jdbc:sqlite:Data.db";
         String sql = "SELECT * FROM data ORDER BY id_data";
+        
+        // 2. Buat variabel counter untuk nomor urut
+        int rowNumber = 1;
+
         try (Connection conn = DriverManager.getConnection(dbUrl);
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)) {
+
             while (rs.next()) {
                 Vector<Object> row = new Vector<>();
-                row.add(rs.getInt("id_data"));
+                // 3. Tambahkan ID asli (untuk internal) dan nomor urut (untuk ditampilkan)
+                row.add(rs.getInt("id_data")); // Kolom 0: ID asli (akan disembunyikan)
+                row.add(rowNumber);                  // Kolom 1: Nomor urut yang rapi
+                
+                // Tambahkan sisa data
                 row.add(rs.getString("Tanggal"));
-                row.add(rs.getString("Status")); 
+                row.add(rs.getString("Status"));
                 row.add(rs.getString("Deskripsi"));
                 row.add(rs.getString("Tempat"));
                 model.addRow(row);
+                
+                // 4. Naikkan counter
+                rowNumber++;
             }
         } catch (SQLException e) {
             System.err.println("ERROR saat mengambil data untuk tabel: " + e.getMessage());

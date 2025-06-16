@@ -1,0 +1,17 @@
+catatan penyusun :
+
+1. jan ubah layout apapun di class GUI
+2. logic nya boleh diubah kalo gk logis sama gk bisa nyambung
+3. sebisa mungkin jan ada method dalam logic yang dihapus ( kalo mau nambah gpp nanti ditambah ke UML) tapi kalo
+    gk bisa yasudah
+4. method nya blom ku tes semua kalo jadi tolong debug(cek fungsinya 1 - 1 T_T)
+5. action listenernya masih amburadul
+6. yaa itu aja dah kerja sono !!
+
+1. class GUI udh kusesuain sama logic
+2. udh kucoba logicnya dan udh mantap keknya
+
+Final gw njir:
+1. logic udah jalan
+2. udah ga nemu bug gwe
+3. harusnya udah selesai sih ini

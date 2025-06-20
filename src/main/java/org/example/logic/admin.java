@@ -5,15 +5,13 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
-// class admin berfungsi sebagai logic dalam admin
+
 public class admin extends MainModel implements SettingData {
 
-    // Atribut spesifik untuk kelas Admin sesuai UML
     private String id_admin;
     private String PWD;
 
     private String statusDetail;
-    // konstruktor class
     public admin(String id_admin, String PWD, int id_data, LocalDate Tanggal, String status, String Deskripsi, String Tempat) {
         super(id_data, Tanggal, status.equalsIgnoreCase("Baik"), Deskripsi, Tempat);
         this.id_admin = id_admin;
@@ -21,9 +19,6 @@ public class admin extends MainModel implements SettingData {
         this.statusDetail = status;
     }
 
-    // ===================================================================
-    // Implementasi method dari settingdata
-    // ===================================================================
 
     @Override
     public void Save_data() {
@@ -31,7 +26,6 @@ public class admin extends MainModel implements SettingData {
         String sql = "INSERT OR REPLACE INTO data (id_data, Tanggal, Status, Deskripsi, Tempat) VALUES(?,?,?,?,?)";
 
         String tanggalStr = getTanggal().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        // GUNAKAN statusDetail, BUKAN konversi dari boolean
         String statusStr = this.statusDetail;
 
         try (Connection conn = DriverManager.getConnection(dbUrl);
@@ -50,23 +44,18 @@ public class admin extends MainModel implements SettingData {
 
     @Override
     public void buat_tabel() {
-        // Mendelegasikan pembuatan tabel ke metode inisialisasi global.
         Login.initDatabase();
     }
 
     @Override
     public void updt_tabel() {
-        // Dalam aplikasi ini, pembaruan tabel ditangani oleh GUI.
         System.out.println("Pembaruan tabel ditangani oleh GUI dengan memanggil getTableModel().");
     }
 
-    // ===================================================================
-    // Implementasi method abstract dari mainmodel
-    // ===================================================================
+   
 
     @Override
     public void Tbh_data() {
-        // logic dari method ini berada di save_data()
         Save_data();
     }
 
@@ -83,9 +72,7 @@ public class admin extends MainModel implements SettingData {
     }
 
 
-    // ===================================================================
-    // GETTER DAN SETTER SESUAI UML
-    // ===================================================================
+   
 
     public void setID_Admin(String id_admin) {
         this.id_admin = id_admin;
@@ -120,8 +107,7 @@ public class admin extends MainModel implements SettingData {
         return super.getTempat();
     }
 
-    // Metode getter dan setter lainnya dari MainModel diwarisi secara otomatis
-    // (getId_data, setId_data, getDeskripsi, setDeskripsi, dll.)
+   
 
     public static boolean hapusData(int id_data) {
         String dbUrl = "jdbc:sqlite:Data.db";

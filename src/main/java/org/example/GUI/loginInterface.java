@@ -1,15 +1,13 @@
-// jan diubah2 layout nya sumpah @IBNU setengah mati aku buat co , emg java swing A#%$#g
-// kalo kamu bisa rapiin ya well ths si :v
 
-package org.example.GUI; // Sesuaikan dengan package Anda jika perlu
 
-import org.example.logic.Login; // Pastikan ini sesuai dengan package Login Anda
+package org.example.GUI; 
+
+import org.example.logic.Login; 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-// Kelas GUI Login Utama
 public class loginInterface extends JFrame {
 
     public loginInterface(String judul) {
@@ -57,17 +55,17 @@ public class loginInterface extends JFrame {
         int fotoY = judulY + judulHeight + 10; // Posisi Y di bawah judul
 
         // Buat instance PhotoAnimator
-        int durasiPerFrameAnimasiMs = 150; // Atur kecepatan animasi (misal 150ms per frame)
+        int durasiPerFrameAnimasiMs = 150; 
         PhotoAnimator panelAnimasi = new PhotoAnimator(durasiPerFrameAnimasiMs);
-        panelAnimasi.setOpaque(false); // Sesuai dengan panelFoto sebelumnya
+        panelAnimasi.setOpaque(false); 
 
         // Muat gambar untuk animasi
-        // PENTING: Sesuaikan pathPrefix, jumlah frame, dan ekstensi file!
+
         panelAnimasi.loadImages(
                 "/frame/frame", // Contoh: /folder_di_classpath/nama_awal_file_
                 1,                      // Nomor frame awal
                 31,                     // Nomor frame akhir (total 30 foto)
-                ".png",                 // Ekstensi file (bisa .jpg, .jpeg, dll.)
+                ".png",                 // Ekstensi file (bisa .jpg, .jpeg.)
                 fotoWidth,              // Lebar target untuk setiap frame
                 fotoHeight              // Tinggi target untuk setiap frame
         );
@@ -75,14 +73,12 @@ public class loginInterface extends JFrame {
         if (panelAnimasi.isAnimationLoadedSuccessfully()) {
             panelAnimasi.startAnimation();
         } else {
-            // Jika gagal memuat, PhotoAnimator akan menampilkan pesan internal
-            // atau Anda bisa menambahkan JLabel error ke panelAnimasi di sini jika mau
+           
             System.err.println("Peringatan: Gagal memuat frame untuk animasi.");
         }
 
         panelAnimasi.setBounds(fotoX, fotoY, fotoWidth, fotoHeight);
-        layeredPane.add(panelAnimasi, Integer.valueOf(JLayeredPane.DEFAULT_LAYER + 5)); // Layer yang sama dengan panelFoto
-        // === AKHIR BAGIAN ANIMASI FOTO ===
+        layeredPane.add(panelAnimasi, Integer.valueOf(JLayeredPane.DEFAULT_LAYER + 5));
 
         JPanel panelTombol = new JPanel();
         panelTombol.setLayout(new GridLayout(1, 2, 10, 0));
@@ -105,15 +101,12 @@ public class loginInterface extends JFrame {
         panelTombol.setBounds(tombolPanelX, tombolPanelY, tombolPanelWidth, tombolPanelHeight);
         layeredPane.add(panelTombol, Integer.valueOf(JLayeredPane.DEFAULT_LAYER + 15));
 
-        Login.initDatabase(); // Inisialisasi database
+        Login.initDatabase(); 
 
-        // ActionListener untuk tombol User
         tombolUser.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Tutup frame loginGUI saat ini
                 dispose();
-                // Tampilkan UserLoginGUI
                 SwingUtilities.invokeLater(() -> new UserLoginGUI().setVisible(true));
             }
         });
@@ -130,7 +123,6 @@ public class loginInterface extends JFrame {
         });
     }
 
-    // Metode helper untuk styling tombol
     private void styleButton(JButton button, Color bgColor, Color hoverColor) {
         button.setFont(new Font("Arial", Font.PLAIN, 16));
         button.setFocusPainted(false);
@@ -157,13 +149,12 @@ public class loginInterface extends JFrame {
     }
 }
 
-// Kelas untuk GUI Login User
 class UserLoginGUI extends JFrame {
     public UserLoginGUI() {
         super("Login User");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        int frameWidth = 500; // Lebar frame UserLoginGUI
-        int frameHeight = 500; // Tinggi frame UserLoginGUI disesuaikan untuk field password
+        int frameWidth = 500; // Lebar 
+        int frameHeight = 500; // Tinggi frame 
         setSize(frameWidth, frameHeight);
         setLocationRelativeTo(null);
         setResizable(false);
@@ -173,7 +164,6 @@ class UserLoginGUI extends JFrame {
         layeredPane.setOpaque(true);
         setContentPane(layeredPane);
 
-        // Panel Background dengan border dan margin dari tepi frame
         JPanel panelBackground = new JPanel();
         panelBackground.setBackground(Color.WHITE);
         panelBackground.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
@@ -184,13 +174,11 @@ class UserLoginGUI extends JFrame {
         panelBackground.setBounds(margin, margin, panelBgWidth, panelBgHeight);
         layeredPane.add(panelBackground, JLayeredPane.DEFAULT_LAYER);
 
-        // Panel utama yang berisi komponen login
         JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS)); // Menggunakan BoxLayout untuk susunan vertikal
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(30, 40, 30, 40)); // Margin internal untuk mainPanel
-        mainPanel.setOpaque(false); // Buat mainPanel transparan
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS)); 
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(30, 40, 30, 40)); 
+        mainPanel.setOpaque(false); 
 
-        // Komponen ID User
 
         JLabel labelId = new JLabel("ID :");
         labelId.setFont(new Font("Arial", Font.BOLD, 16));
@@ -212,8 +200,8 @@ class UserLoginGUI extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0; // Kolom 0
         gbc.gridy = 0; // Baris 0
-        gbc.anchor = GridBagConstraints.CENTER; // Menengahkan komponen di dalam selnya (vertikal dan horizontal)
-        gbc.fill = GridBagConstraints.HORIZONTAL; // Biarkan field mengisi lebar sel jika sel lebih lebar
+        gbc.anchor = GridBagConstraints.CENTER; 
+        gbc.fill = GridBagConstraints.HORIZONTAL; 
         gbc.weightx = 1.0;
 
         panelInputWrapper.add(inputIdField, gbc);
@@ -235,7 +223,6 @@ class UserLoginGUI extends JFrame {
 
 
 
-        // Menambahkan komponen ke mainPanel
         mainPanel.add(Box.createRigidArea(new Dimension(0,60)));
         mainPanel.add(panelID);
         mainPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Jarak kecil
@@ -250,7 +237,6 @@ class UserLoginGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String idStr = inputIdField.getText().trim();
 
-                // Validasi input dari GUI
                 if (idStr.isEmpty() || !idStr.matches("\\d+")) {
                     JOptionPane.showMessageDialog(UserLoginGUI.this, "ID User harus berupa angka dan tidak boleh kosong.", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
@@ -260,18 +246,15 @@ class UserLoginGUI extends JFrame {
                     // Konversi ID dari String ke int untuk dikirim ke metode verifikasi
                     int id = Integer.parseInt(idStr);
                     
-                    // Panggil metode verifikasi statis dari kelas Login
                     if (Login.verif_login_user(id)) {
                         JOptionPane.showMessageDialog(UserLoginGUI.this, "Login User Berhasil!");
                         dispose(); // Tutup jendela login user
                         // Buka dasbor user
                         SwingUtilities.invokeLater(() -> new usermenu("User Dashboard", idStr).setVisible(true));
                     } else {
-                        // Pesan ini mungkin muncul jika ada kesalahan database
                         JOptionPane.showMessageDialog(UserLoginGUI.this, "Login Gagal. Terjadi kesalahan database.", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 } catch (NumberFormatException ex) {
-                    // Menangani kasus jika angka yang dimasukkan terlalu besar untuk tipe data int
                     JOptionPane.showMessageDialog(UserLoginGUI.this, "ID User tidak valid.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -282,7 +265,6 @@ class UserLoginGUI extends JFrame {
     }
 }
 
-// Kelas untuk GUI Login Admin
 class AdminLoginGUI extends JFrame {
     public AdminLoginGUI() {
         super("Login Admin");
@@ -294,21 +276,20 @@ class AdminLoginGUI extends JFrame {
         setResizable(false);
 
         JLayeredPane layeredPane = new JLayeredPane();
-        layeredPane.setBackground(Color.WHITE); // Latar belakang layeredPane putih
+        layeredPane.setBackground(Color.WHITE); 
         layeredPane.setOpaque(true);
-        setContentPane(layeredPane); // layeredPane menjadi content pane
+        setContentPane(layeredPane); 
 
-        // Panel Background dengan border dan margin dari tepi frame
         JPanel panelBackground = new JPanel();
-        panelBackground.setBackground(Color.WHITE); // Warna latar sama dengan layeredPane
-        panelBackground.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3)); // Border garis
+        panelBackground.setBackground(Color.WHITE);
+        panelBackground.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3)); 
 
         int margin = 50; // Margin panelBackground dari tepi layeredPane (frame)
         // Perhitungan ukuran panelBackground yang dikoreksi agar simetris
         int panelBgWidth = frameWidth - 30 - (2 * margin);
         int panelBgHeight = frameHeight - 50 - (2 * margin);
         panelBackground.setBounds(margin, margin, panelBgWidth, panelBgHeight);
-        layeredPane.add(panelBackground, JLayeredPane.DEFAULT_LAYER); // Tambahkan ke layer bawah
+        layeredPane.add(panelBackground, JLayeredPane.DEFAULT_LAYER); 
 
         // Panel utama yang berisi komponen login (ID Label, ID Field, Password Label, Password Field, Tombol Login)
         JPanel mainPanel = new JPanel();
@@ -357,8 +338,7 @@ class AdminLoginGUI extends JFrame {
         tombolLoginAdmin.setAlignmentX(Component.CENTER_ALIGNMENT); // Tombol di tengah
         tombolLoginAdmin.setPreferredSize(new Dimension(Integer.MAX_VALUE, 50)); // Ukuran tombol disesuaikan
         tombolLoginAdmin.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50)); // Agar ukuran tombol tetap
-        // Anda bisa memanggil metode styleButton dari loginGUI jika dibuat public static
-        // atau menerapkan styling serupa di sini:
+     
         tombolLoginAdmin.setBackground(new Color(49, 51, 51)); // Abu-abu
         tombolLoginAdmin.setForeground(Color.WHITE);
         tombolLoginAdmin.setFocusPainted(false);
@@ -383,7 +363,6 @@ class AdminLoginGUI extends JFrame {
         mainPanel.add(Box.createRigidArea(new Dimension(0, 40))); // Jarak di bawah tombol
 
 
-        // ActionListener untuk tombol login admin
         tombolLoginAdmin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -400,7 +379,6 @@ class AdminLoginGUI extends JFrame {
                 if (Login.verif_login_admin(id, password)) {
                     JOptionPane.showMessageDialog(AdminLoginGUI.this, "Login Admin Berhasil!");
                     dispose(); // Tutup jendela login admin
-                    // Buka dasbor admin
                     SwingUtilities.invokeLater(() -> new adminmenu("Admin Dashboard", id).setVisible(true));
                 } else {
                     JOptionPane.showMessageDialog(AdminLoginGUI.this, "Login Gagal. ID atau Password salah.", "Error", JOptionPane.ERROR_MESSAGE);

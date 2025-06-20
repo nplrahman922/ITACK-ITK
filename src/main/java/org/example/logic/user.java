@@ -13,11 +13,9 @@ public class user extends MainModel implements SettingData {
         super(id_data, Tanggal, status.equalsIgnoreCase("Baik"), Deskripsi, Tempat);
     }
 
-    // --- Implementasi Metode dari MainModel (Abstrak) ---
-
+    //Implementasi Metode dari MainModel (Abstrak)
     @Override
     public void Tbh_data() {
-        // Mendelegasikan tugas penambahan data ke metode Save_data() dari interface.
         Save_data();
     }
 
@@ -32,29 +30,26 @@ public class user extends MainModel implements SettingData {
         System.out.println("Deskripsi: " + getDeskripsi());
     }
 
-    // --- Implementasi Metode dari SettingData (Interface) ---
-
+    //Implementasi Metode dari SettingData (Interface)
     @Override
     public void buat_tabel() {
-        // Mendelegasikan pembuatan tabel ke metode inisialisasi database global
         Login.initDatabase();
     }
 
     @Override
-    public void updt_tabel() {
-        // Dalam aplikasi ini, pembaruan tabel ditangani oleh GUI
+    public void updt_tabel() 
         System.out.println("Pembaruan tabel ditangani oleh GUI dengan memanggil getTableModel().");
     }
 
     @Override
     public void Save_data() {
-        String dbUrl = "jdbc:sqlite:Data.db"; //
+        String dbUrl = "jdbc:sqlite:Data.db";
         String sql = "INSERT OR REPLACE INTO data (id_data, Tanggal, Status, Deskripsi, Tempat) VALUES(?,?,?,?,?)";
 
         String tanggalStr = getTanggal().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        String statusStr = getStatusInfo(); // Mendapatkan "Baik" atau "Rusak"
+        String statusStr = getStatusInfo();
 
-        try (Connection conn = DriverManager.getConnection(dbUrl); //
+        try (Connection conn = DriverManager.getConnection(dbUrl); 
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, getId_data());
@@ -71,12 +66,11 @@ public class user extends MainModel implements SettingData {
     }
 
 
-    // --- Metode Statis (Utility) untuk GUI ---
-
+    //Metode Statis (Utility) untuk GUI
     public static int getLatestId() {
-        String dbUrl = "jdbc:sqlite:Data.db"; //
+        String dbUrl = "jdbc:sqlite:Data.db";
         String sql = "SELECT MAX(id_data) FROM data";
-        try (Connection conn = DriverManager.getConnection(dbUrl); //
+        try (Connection conn = DriverManager.getConnection(dbUrl);
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             if (rs.next()) {
@@ -98,12 +92,12 @@ public class user extends MainModel implements SettingData {
             }
         };
 
-        String dbUrl = "jdbc:sqlite:Data.db"; //
+        String dbUrl = "jdbc:sqlite:Data.db";
         String sql = "SELECT * FROM data ORDER BY id_data";
 
         int rowNumber = 1;
 
-        try (Connection conn = DriverManager.getConnection(dbUrl); //
+        try (Connection conn = DriverManager.getConnection(dbUrl);
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 

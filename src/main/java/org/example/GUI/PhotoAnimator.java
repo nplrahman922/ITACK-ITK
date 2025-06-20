@@ -14,7 +14,7 @@ public class PhotoAnimator extends JPanel {
     private List<ImageIcon> frames;
     private int currentFrameIndex = 0;
     private Timer animationTimer;
-    private int delayMs; // Durasi tampilan setiap frame dalam milidetik
+    private int delayMs; 
     private boolean imagesLoadedSuccessfully = false;
 
     public PhotoAnimator(int delayMs) {
@@ -25,7 +25,7 @@ public class PhotoAnimator extends JPanel {
         this.displayLabel.setVerticalAlignment(SwingConstants.CENTER);
         setLayout(new BorderLayout());
         add(displayLabel, BorderLayout.CENTER);
-        this.setOpaque(false); // Agar sesuai dengan setOpaque(false) pada panelFoto sebelumnya
+        this.setOpaque(false); 
     }
 
     public void loadImages(String pathPrefix, int startNum, int endNum, String suffix, int targetWidth, int targetHeight) {

@@ -3,22 +3,16 @@ package org.example.logic;
 import java.time.LocalDate;
 
 
-/**
- * Kelas Abstrak MainModel sesuai dengan desain UML.
- * Menjadi blueprint dasar untuk kelas turunan seperti Admin dan User.
- */
+//Kelas Abstrak MainModel
 public abstract class MainModel {
     // Atribut dasar yang diwarisi oleh kelas turunan
     private int id_data;
     private LocalDate Tanggal;
-    private boolean Status; // true = Baik, false = Rusak/Perbaikan
+    private boolean Status;
     private String Deskripsi;
     private String Tempat;
 
-    /**
-     * Konstruktor untuk MainModel.
-     * Akan dipanggil oleh konstruktor dari kelas anak (admin, user).
-     */
+    //Konstruktor MainModel
     public MainModel(int id_data, LocalDate Tanggal, boolean Status, String Deskripsi, String Tempat) {
         this.id_data = id_data;
         this.Tanggal = Tanggal;
@@ -27,16 +21,11 @@ public abstract class MainModel {
         this.Tempat = Tempat;
     }
 
-    // --- METODE ABSTRAK (WAJIB DIIMPLEMENTASIKAN OLEH KELAS ANAK) ---
-    
-    /**
-     * Metode abstrak untuk logika penambahan data.
-     */
+    //Bagian Metode Abstrak
+    //Metode Abstrak untuk Penambahan data
     public abstract void Tbh_data();
-
-    /**
-     * Metode abstrak untuk logika penampilan data.
-     */
+    
+    //Metode Abstrak untuk menampilkan data
     public abstract void Tmpl_data();
 
     public int getId_data() {
@@ -79,10 +68,7 @@ public abstract class MainModel {
         this.Tempat = Tempat;
     }
     
-    /**
-     * Memberikan informasi status dalam bentuk String.
-     * @return String representasi dari status.
-     */
+    // Memberikan info status
     public String getStatusInfo() {
         return this.Status ? "Baik" : "Rusak";
     }

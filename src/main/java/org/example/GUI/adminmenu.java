@@ -15,7 +15,6 @@ import java.time.format.DateTimeParseException;
 
 
 public class adminmenu extends JFrame {
-    // Deklarasi komponen (tetap sama)
     private JTable table;
     private JTextField tanggal_text, tempat_text;
     private JTextArea deskripsi_text;
@@ -47,7 +46,6 @@ public class adminmenu extends JFrame {
         panelBackground.setBounds(margin, margin, frameWidth - 2 * margin - 15, frameHeight - 2 * margin - 40);
         layeredPane.add(panelBackground, JLayeredPane.DEFAULT_LAYER);
 
-        // --- Kolom Kiri (Sesuai Kode Asli) ---
         JPanel fotoPanel = new JPanel(new BorderLayout());
         fotoPanel.setBackground(Color.WHITE);
         fotoPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
@@ -144,7 +142,6 @@ public class adminmenu extends JFrame {
         tempat_text.setBounds(65,550,310,30);
         layeredPane.add(tempat_text, Integer.valueOf(JLayeredPane.DEFAULT_LAYER + 20));
 
-        // --- Kolom Kanan ---
         JPanel konten_kanan = new JPanel();
         konten_kanan.setBackground(Color.WHITE);
         konten_kanan.setBounds(510,50,420,130);
@@ -232,7 +229,6 @@ public class adminmenu extends JFrame {
         button_hapus.setBounds(510,570,420,30);
         layeredPane.add(button_hapus, Integer.valueOf(JLayeredPane.DEFAULT_LAYER + 15));
 
-        // --- Tabel Data ---
         JPanel tabel_panel = new JPanel(new BorderLayout());
         tabel_panel.setBackground(Color.WHITE);
         tabel_panel.setBounds(510,360,420,200);
@@ -245,54 +241,43 @@ public class adminmenu extends JFrame {
         JScrollPane scrollPaneTable = new JScrollPane(table);
         tabel_panel.add(scrollPaneTable, BorderLayout.CENTER);
 
-        // Pasang listener pada JScrollPane, bukan pada JTable secara langsung.
         scrollPaneTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                // Periksa apakah tabel sedang tidak dalam mode edit
                 if (!table.isEditing()) {
-                    // Dapatkan titik di mana mouse diklik
                     Point point = e.getPoint();
-                    // Cek apakah ada baris di titik tersebut
                     int rowAtPoint = table.rowAtPoint(point);
                     if (rowAtPoint == -1) {
-                        // Panggil metode untuk membersihkan pilihan dan form
                         bersihkanForm();
                     }
                 }
             }
         });
 
-        // Listener untuk mengisi form HANYA saat sebuah baris di tabel diklik
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // Pastikan yang diklik adalah sebuah baris
                 if (table.getSelectedRow() != -1) {
                     isiFormDariTabel();
                 }
             }
         });
 
-        // --- HUBUNGKAN ACTION LISTENERS ---
         tambah.addActionListener(e -> tambahData());
         button_edit.addActionListener(e -> editData());
         button_hapus.addActionListener(e -> hapusData());
     }
 
-    // --- METODE LOGIKA ---
 
     private void refreshTable() {
         DefaultTableModel model = admin.getTableModel();
         table.setModel(model);
 
-        // Menyembunyikan kolom pertama (kolom "ID" asli) dari tampilan
         table.getColumnModel().getColumn(0).setMinWidth(0);
         table.getColumnModel().getColumn(0).setMaxWidth(0);
         table.getColumnModel().getColumn(0).setWidth(0);
 
-        // Mengatur lebar kolom yang terlihat agar rapi
-        // Indeks sekarang bergeser karena "ID" disembunyikan
+        
         table.getColumnModel().getColumn(1).setPreferredWidth(40);   // Kolom "No."
         table.getColumnModel().getColumn(2).setPreferredWidth(90);   // Kolom "Tanggal"
         table.getColumnModel().getColumn(3).setPreferredWidth(80);   // Kolom "Status"
@@ -322,7 +307,7 @@ public class adminmenu extends JFrame {
             LocalDate tanggal = LocalDate.parse(tanggal_text.getText(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             int newId = admin.getLatestId() + 1;
 
-            // 2. Buat objek admin menggunakan konstruktor yang benar (dengan String status)
+            // 2. Buat objek admin menggunakan konstruktor yang benar 
             admin dataBaru = new admin(this.adminId, null, newId, tanggal, status, deskripsi_text.getText(), tempat_text.getText());
 
             // 3. Panggil metode Save_data()
@@ -378,7 +363,6 @@ public class adminmenu extends JFrame {
     }
 
     private void hapusData() {
-        // Metode ini tidak berinteraksi langsung dengan objek, jadi tidak perlu diubah
         int selectedRow = table.getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Pilih data dari tabel yang ingin dihapus.", "Peringatan", JOptionPane.WARNING_MESSAGE);

@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public class usermenu extends JFrame {
-    // Deklarasi komponen sebagai field kelas
+    // Deklarasi sebagai field kelas
     private JTable table;
     private JTextField tanggal_text, tempat_text, deskripsi_text;
     private JRadioButton radioButtonBaik, radioButtonRusak;
@@ -83,7 +83,7 @@ public class usermenu extends JFrame {
         panelquotes.setBounds(50, 300, 280, 60);
         panelquotes.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
         JLabel labelQuotes = new JLabel("<html>W h a t . d o . y o u . w a n n a<br>r e p o r t s . . . . T o d a y ?</html>");
-        // PERBAIKAN: Mengganti NORMAL menjadi Font.PLAIN
+        //Mengganti NORMAL menjadi Font.PLAIN
         labelQuotes.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
         panelquotes.add(labelQuotes);
         layeredPane.add(panelquotes, Integer.valueOf(JLayeredPane.DEFAULT_LAYER + 15));
@@ -186,22 +186,20 @@ public class usermenu extends JFrame {
         JScrollPane scrollPane = new JScrollPane(table);
         tabel_panel.add(scrollPane, BorderLayout.CENTER);
 
-        // --- HUBUNGKAN ACTION LISTENER ---
         tambah.addActionListener(e -> tambahData());
     }
 
-    // --- METODE LOGIKA ---
 
     private void refreshTable() {
         DefaultTableModel model = user.getTableModel();
         table.setModel(model);
 
-        // Menyembunyikan kolom pertama (kolom "ID" asli) dari tampilan
+        // hide kolom pertama (kolom "ID" asli) dari tampilan
         table.getColumnModel().getColumn(0).setMinWidth(0);
         table.getColumnModel().getColumn(0).setMaxWidth(0);
         table.getColumnModel().getColumn(0).setWidth(0);
 
-        // Mengatur lebar kolom yang terlihat agar rapi
+        // atur lebar kolom agar rapi
         table.getColumnModel().getColumn(1).setPreferredWidth(40);   // Kolom "No."
         table.getColumnModel().getColumn(2).setPreferredWidth(90);   // Kolom "Tanggal"
         table.getColumnModel().getColumn(3).setPreferredWidth(80);   // Kolom "Status"
@@ -211,13 +209,13 @@ public class usermenu extends JFrame {
 
     private void tambahData() {
         try {
-            // 1. Validasi input tidak boleh kosong
+            // input tidak boleh kosong
             if (tanggal_text.getText().trim().isEmpty() || tempat_text.getText().trim().isEmpty() || deskripsi_text.getText().trim().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Semua field harus diisi!", "Input Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            // 2. Parse tanggal dari text field menjadi objek LocalDate.
+            // 2. Parse tanggal text field jadi objek LocalDate.
             // Langkah ini juga berfungsi sebagai validasi format tanggal.
             LocalDate tanggal = LocalDate.parse(tanggal_text.getText(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
@@ -227,11 +225,10 @@ public class usermenu extends JFrame {
             // 4. Dapatkan ID baru untuk data
             int newId = user.getLatestId() + 1;
 
-            // 5. Buat objek 'user' baru menggunakan konstruktor yang sudah benar
+            // 5. Buat objek 'user' baru pakai konstruktor yang sudah true
             user dataBaru = new user(newId, tanggal, status, deskripsi_text.getText(), tempat_text.getText());
 
-            // 6. Panggil metode simpanData() untuk menyimpan objek ke database.
-            // Metode ini sekarang void dan tidak perlu diperiksa dengan if.
+            // 6. Panggil metode simpanData() untuk save objek ke database.
             dataBaru.Save_data();
 
             // 7. Tampilkan pesan sukses dan perbarui UI
@@ -240,10 +237,8 @@ public class usermenu extends JFrame {
             bersihkanForm();
 
         } catch (DateTimeParseException ex) {
-            // Tangani error jika format tanggal yang dimasukkan salah
             JOptionPane.showMessageDialog(this, "Format Tanggal salah! Gunakan format yyyy-MM-dd.", "Input Error", JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
-            // Tangani error umum lainnya yang mungkin terjadi
             JOptionPane.showMessageDialog(this, "Gagal menambahkan laporan: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace(); // Cetak error ke konsol untuk membantu debugging
         }
@@ -256,10 +251,8 @@ public class usermenu extends JFrame {
         radioButtonBaik.setSelected(true);
     }
 
-    // Main method untuk testing individual
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            // Inisialisasi DB sebelum frame dibuat untuk testing
             Login.initDatabase();
             new usermenu("GUI-User Menu", "user-test").setVisible(true);
         });

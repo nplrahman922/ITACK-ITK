@@ -7,34 +7,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-/**
- * Kelas Login yang disesuaikan agar ketat sesuai dengan desain UML.
- */
+//Kelas Login
 public class Login {
-    // --- PERUBAHAN ATRIBUT ---
     private String id_login;
     private String Password;
 
-    /**
-     * Konstruktor untuk membuat objek Login.
-     * @param id_login ID pengguna atau admin.
-     * @param password Kata sandi.
-     */
-    // --- PERUBAHAN KONSTRUKTOR ---
-    // Parameter id_login diubah menjadi String.
     public Login(String id_login, String password) {
         this.id_login = id_login;
         this.Password = password;
     }
 
-    // ===================================================================
     // METODE GETTER DAN SETTER
-    // ===================================================================
-
-
     public void getPassword() {
-        // Logika untuk metode ini bisa ditambahkan jika diperlukan,
-        // namun berdasarkan UML, metode ini tidak mengembalikan nilai.
         System.out.println("Metode getPassword() dipanggil.");
     }
 
@@ -52,13 +36,7 @@ public class Login {
     }
 
 
-    // ===================================================================
     // METODE VERIFIKASI
-    // ===================================================================
-
-    /**
-     * Metode verifikasi login sesuai dengan yang ada di UML.
-     */
     public void verif_login() {
         System.out.println("Metode verifikasi umum dipanggil.");
     }
